@@ -1,21 +1,37 @@
 """
-FastAPI application for fraud detection predictions.
+Production-Ready FastAPI Application for Fraud Detection.
+
+This module provides a comprehensive production-ready API with:
+- Async endpoints for high performance
+- Input validation with Pydantic
+- Rate limiting and security
+- Health checks and monitoring
+- Comprehensive error handling
+- API documentation and versioning
 """
 
-from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi import FastAPI, HTTPException, Depends, status, Request, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field, validator
-from typing import List, Dict, Any, Optional
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from pydantic import BaseModel, Field, validator, ValidationError
+from typing import List, Dict, Any, Optional, Union
 import pandas as pd
 import numpy as np
 import joblib
 import logging
 from pathlib import Path
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 import asyncio
+import time
+import hashlib
+import psutil
+import aiofiles
 from contextlib import asynccontextmanager
+from collections import defaultdict, deque
+import threading
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
