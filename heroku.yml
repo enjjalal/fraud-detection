@@ -1,0 +1,11 @@
+build:
+  docker:
+    api: Dockerfile.api
+    dashboard: Dockerfile.dashboard
+release:
+  image: api
+  command:
+    - python -c "print('Release phase - models and database setup')"
+run:
+  api: uvicorn src.api.complete_api:app --host 0.0.0.0 --port $PORT --workers 1
+  dashboard: streamlit run src/dashboard/interpretability_dashboard.py --server.port=$PORT --server.address=0.0.0.0 --server.headless=true
