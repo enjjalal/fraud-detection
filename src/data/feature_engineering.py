@@ -115,7 +115,10 @@ class AdvancedFeatureEngineer:
         
         # Statistical transformations
         df['Amount_zscore'] = (df['Amount'] - df['Amount'].mean()) / df['Amount'].std()
-        df['Amount_robust_zscore'] = (df['Amount'] - df['Amount'].median()) / df['Amount'].mad()
+        # Use median absolute deviation (MAD) manually since .mad() was deprecated
+        median_amount = df['Amount'].median()
+        mad_amount = (df['Amount'] - median_amount).abs().median()
+        df['Amount_robust_zscore'] = (df['Amount'] - median_amount) / (mad_amount + 1e-8)
         
         # Percentile-based features
         df['Amount_percentile'] = df['Amount'].rank(pct=True)
